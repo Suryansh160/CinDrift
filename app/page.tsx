@@ -1,16 +1,26 @@
 import HeroCarousel from '@/app/components/hero-carousel'
 import MovieCard from '@/app/components/movie-card'
+import Snackbar from '@/app/components/snackbar'
 import { getNowPlaying, getMovie } from '@/lib/tmdb'
 import { logger } from '@/lib/logger'
 
 export default async function Home () {
-  const { results } = await getNowPlaying()
+  const { data, error: listError } = await getNowPlaying()
+  const results = data?.results ?? []
   const top = results.filter(m => m.backdrop_path).slice(0, 5)
-  const movies = await Promise.all(top.map(m => getMovie(m.id)))
+
+  const details = await Promise.all(top.map(m => getMovie(m.id)))
+  const movies = details
+    .map(d => d.data)
+    .filter((m): m is NonNullable<typeof m> => m !== null)
+
+  // list error takes priority, else first details error
+  const error = listError ?? details.find(d => d.error)?.error ?? null
 
   logger.info('landing rendered', {
     slides: movies.length,
-    total: results.length
+    total: results.length,
+    error
   })
 
   return (
@@ -25,6 +35,8 @@ export default async function Home () {
           ))}
         </div>
       </section>
+
+      <Snackbar message={error} />
     </main>
   )
 }

@@ -27,6 +27,8 @@ export default function HeroCarousel ({ movies }: { movies: Movie[] }) {
     return () => clearTimeout(t)
   }, [active, paused, movies.length])
 
+  if (!movies.length) return null
+
   const movie = movies[active]
   const year = movie.release_date?.slice(0, 4)
   const runtime = fmtRuntime(movie.runtime)
@@ -112,7 +114,7 @@ export default function HeroCarousel ({ movies }: { movies: Movie[] }) {
           </p>
 
           <Link
-            href={`/book/${movie.id}`}
+            href={`/movie-details?id=${movie.id}`}
             className='hero-in mt-2 flex w-fit items-center gap-2 rounded-full bg-primary px-7 py-3 text-sm font-medium transition hover:opacity-90'
             style={{ animationDelay: '0.65s' }}
           >

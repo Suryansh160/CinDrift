@@ -6,7 +6,7 @@ import type { Movie } from '@/lib/types'
 export default function MovieCard ({ movie }: { movie: Movie }) {
   return (
     <Link
-      href={`/book/${movie.id}`}
+      href={`/movie-details?id=${movie.id}`}
       className='group relative aspect-2/3 overflow-hidden rounded-lg bg-zinc-900 outline-none transition duration-300 hover:-translate-y-1 hover:ring-2 hover:ring-primary'
     >
       <Image
